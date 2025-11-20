@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/24.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="hu.unideb.inf.warehouse.frontend.controller.MainPageController"
+            prefHeight="775.0" prefWidth="1239.0">
+
+    <children>
+        <BorderPane prefHeight="755.0" prefWidth="1232.0">
+
+            <!-- BAL OLDALI MENÜ -->
+            <left>
+                <VBox alignment="TOP_CENTER" spacing="15.0">
+                    <children>
+                        <Button text="Products" />
+                        <Button text="Orders" />
+                        <Button text="Sales" />
+                        <Button text="Customers" />
+                    </children>
+                </VBox>
+            </left>
+
+            <!-- KÖZÉPSŐ TARTALOM -->
+            <center>
+                <VBox>
+                    <children>
+
+                        <!-- TABLE + SEARCH SOR -->
+                        <HBox alignment="CENTER_LEFT">
+                            <children>
+                                <Label text="Items"/>
+                                <Region prefWidth="300" />
+                                <TextField fx:id="searchField" promptText="Search..." />
+                                <Button text="Search" onAction="#onSearch"/>
+                            </children>
+                        </HBox>
+
+                        <!-- TÁBLA -->
+                        <TableView fx:id="tableView">
+                            <columns>
+                                <TableColumn fx:id="colField1" text="Field1"/>
+                                <TableColumn fx:id="colField2" text="Field2"/>
+                                <TableColumn fx:id="colField3" text="Field3"/>
+                                <TableColumn fx:id="colField4" text="Field4"/>
+                            </columns>
+                        </TableView>
+
+                    </children>
+                </VBox>
+            </center>
+
+            <!-- JOBB OLDAL -->
+            <right>
+                <VBox alignment="TOP_CENTER">
+                    <children>
+                        <Label text="Add/Remove item"/>
+
+                        <TextField fx:id="field1Input" promptText="Field1 Value"/>
+                        <TextField fx:id="field2Input" promptText="Field2 Value"/>
+                        <TextField fx:id="field3Input" promptText="Field3 Value"/>
+                        <TextField fx:id="field4Input" promptText="Field4 Value"/>
+
+                        <HBox alignment="CENTER">
+                            <children>
+                                <Button text="Clear" onAction="#onClear" />
+                                <Region prefWidth="50"/>
+                                <Button text="Add" onAction="#onAdd"/>
+                            </children>
+                        </HBox>
+
+                        <Button text="Remove" onAction="#onRemove" />
+
+                    </children>
+                </VBox>
+            </right>
+
+        </BorderPane>
+    </children>
+</AnchorPane>
