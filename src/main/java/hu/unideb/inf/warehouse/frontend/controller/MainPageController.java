@@ -8,6 +8,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 
 @Component
 public class MainPageController {
@@ -63,10 +65,22 @@ public class MainPageController {
     @FXML
     public void onRemove() {
         Item selected = tableView.getSelectionModel().getSelectedItem();
-        if (selected != null) {
-            itemRepository.delete(selected);
-            data.remove(selected);
+        if (selected == null) {
+            Alert warning = new Alert(Alert.AlertType.WARNING, "Please select an item to remove!");
+            warning.showAndWait();
+            return;
         }
+        Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION,
+                "Are you sure you want to delete this item?", ButtonType.YES, ButtonType.NO);
+        confirmation.setTitle("Confirm Delete");
+        confirmation.setHeaderText(null);
+
+        confirmation.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.YES) {
+                itemRepository.delete(selected);
+                data.remove(selected);
+            }
+        });
     }
 
     @FXML
