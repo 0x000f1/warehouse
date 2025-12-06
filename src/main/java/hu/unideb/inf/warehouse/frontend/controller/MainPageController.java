@@ -4,7 +4,10 @@ import hu.unideb.inf.warehouse.model.Customer;
 import hu.unideb.inf.warehouse.model.Product;
 import hu.unideb.inf.warehouse.model.Order;
 import hu.unideb.inf.warehouse.model.Sale;
+import hu.unideb.inf.warehouse.repository.CustomerRepository;
+import hu.unideb.inf.warehouse.repository.OrderRepository;
 import hu.unideb.inf.warehouse.repository.ProductRepository;
+import hu.unideb.inf.warehouse.repository.SaleRepository;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
@@ -15,6 +18,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
 
 @Component
 public class MainPageController {
@@ -38,6 +43,12 @@ public class MainPageController {
     @FXML private TextField searchField;
 
     private ObservableList<Object> data = FXCollections.observableArrayList();
+    @Autowired
+    private CustomerRepository customerRepository;
+    @Autowired
+    private OrderRepository orderRepository;
+    @Autowired
+    private SaleRepository saleRepository;
 
     private enum ActiveTable { PRODUCTS, ORDERS, SALES, CUSTOMERS }
     private ActiveTable active = ActiveTable.PRODUCTS;
@@ -73,12 +84,15 @@ public class MainPageController {
 
         tableView.getColumns().addAll(c0, c1, c2, c3, c4);
 
-        field5Input.setPromptText("Product ID");
+
         field1Input.setPromptText("Name");
         field2Input.setPromptText("Category");
         field3Input.setPromptText("Price");
         field4Input.setPromptText("Stock");
 
+        // nincs 5. input
+        field5Input.setPromptText("");
+        field5Input.setDisable(true);
     }
 
     private void loadOrdersTable() {
@@ -99,12 +113,14 @@ public class MainPageController {
 
         tableView.getColumns().addAll(c1, c2, c3, c4);
 
-        field1Input.setPromptText("Order ID");
-        field2Input.setPromptText("Customer ID");
-        field3Input.setPromptText("Order Date");
-        field4Input.setPromptText("Status");
+        field1Input.setPromptText("Customer ID");
+        field2Input.setPromptText("Order Date");
+        field3Input.setPromptText("Status");
 
-        // nincs 5. input
+        // nincs 4-5. input
+        field4Input.setPromptText("");
+        field4Input.setDisable(true);
+
         field5Input.setPromptText("");
         field5Input.setDisable(true);
 
@@ -129,12 +145,14 @@ public class MainPageController {
 
         tableView.getColumns().addAll(c1, c2, c3, c4);
 
-        field1Input.setPromptText("Sale ID");
+        field1Input.setPromptText("Order ID");
         field2Input.setPromptText("Product ID");
-        field3Input.setPromptText("Order ID");
-        field4Input.setPromptText("Quantity");
+        field3Input.setPromptText("Quantity");
 
-        // nincs 5. input
+        // nincs 4-5. input
+        field4Input.setPromptText("");
+        field4Input.setDisable(true);
+
         field5Input.setPromptText("");
         field5Input.setDisable(true);
 
@@ -159,12 +177,14 @@ public class MainPageController {
 
         tableView.getColumns().addAll(c1, c2, c3, c4);
 
-        field1Input.setPromptText("ID");
-        field2Input.setPromptText("Name");
-        field3Input.setPromptText("Email");
-        field4Input.setPromptText("Phone");
+        field1Input.setPromptText("Name");
+        field2Input.setPromptText("Email");
+        field3Input.setPromptText("Phone");
 
-        // nincs 5. input
+        // nincs 4-5. input
+        field4Input.setPromptText("");
+        field4Input.setDisable(true);
+
         field5Input.setPromptText("");
         field5Input.setDisable(true);
 
@@ -220,12 +240,47 @@ public class MainPageController {
                             .build();
                     productRepository.save(p);
                 }
+
+
                 case CUSTOMERS -> {
                     Customer c = Customer.builder()
                             .name(field1Input.getText())
                             .email(field2Input.getText())
                             .phone(field3Input.getText())
                             .build();
+                    customerRepository.save(c);
+                }
+
+
+                case ORDERS -> {
+                    Long customerId = Long.parseLong(field1Input.getText());
+                    Customer customer = customerRepository.findById(customerId).orElse(null);
+
+                    Order o = Order.builder()
+                            .customer(customer)
+                            .orderDate(LocalDateTime.parse(field2Input.getText()))
+                            .status(field3Input.getText())
+                            .build();
+
+                    orderRepository.save(o);
+                }
+
+
+                case SALES -> {
+                    Long orderId = Long.parseLong(field1Input.getText());
+                    Order order = orderRepository.findById(orderId).orElse(null);
+
+                    Long productId = Long.parseLong(field1Input.getText());
+                    Product product = productRepository.findById(productId).orElse(null);
+
+                    Sale s = Sale.builder()
+                            .order(order)
+                            .product(product)
+                            .quantity(Integer.parseInt(field3Input.getText()))
+                            .total(Double.parseDouble(field4Input.getText()))
+                            .build();
+                    saleRepository.save(s);
+
                 }
             }
             refreshTable();
@@ -256,6 +311,7 @@ public class MainPageController {
         field2Input.clear();
         field3Input.clear();
         field4Input.clear();
+        field5Input.clear();
     }
 
     @FXML
