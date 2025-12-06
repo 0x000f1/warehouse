@@ -298,16 +298,26 @@ public class MainPageController {
 
     @FXML
     public void onRemove() {
-        if (active != ActiveTable.PRODUCTS) {
-            new Alert(Alert.AlertType.WARNING,
-                    "Removing is only available for Products right now.").showAndWait();
+        Object selected = tableView.getSelectionModel().getSelectedItem();
+
+        if (selected == null) {
+            new Alert(Alert.AlertType.ERROR, "Invalid selection!").showAndWait();
             return;
         }
 
-        Product selected = (Product) tableView.getSelectionModel().getSelectedItem();
-        if (selected == null) return;
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure tou want to delete this item?", ButtonType.YES, ButtonType.NO);
+        confirm.setHeaderText(null);
+        confirm.showAndWait();
 
-        productRepository.delete(selected);
+        if (confirm.getResult() != ButtonType.YES) return;
+
+        switch (active) {
+            case PRODUCTS -> productRepository.delete((Product) selected);
+            case CUSTOMERS -> customerRepository.delete((Customer) selected);
+            case ORDERS -> orderRepository.delete((Order) selected);
+            case SALES -> saleRepository.delete((Sale) selected);
+        }
+
         refreshTable();
     }
 
