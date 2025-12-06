@@ -1,6 +1,9 @@
 package hu.unideb.inf.warehouse.frontend.controller;
 
+import hu.unideb.inf.warehouse.model.Customer;
 import hu.unideb.inf.warehouse.model.Product;
+import hu.unideb.inf.warehouse.model.Order;
+import hu.unideb.inf.warehouse.model.Sale;
 import hu.unideb.inf.warehouse.repository.ProductRepository;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -82,9 +85,17 @@ public class MainPageController {
         tableView.getColumns().clear();
 
         TableColumn<Object, String> c1 = new TableColumn<>("Order ID");
+        c1.setCellValueFactory(param ->
+                new SimpleStringProperty(String.valueOf(((Order) param.getValue()).getId())));
         TableColumn<Object, String> c2 = new TableColumn<>("Customer ID");
+        c2.setCellValueFactory(param ->
+                new SimpleStringProperty(((Order) param.getValue()).getCustomer().getName()));
         TableColumn<Object, String> c3 = new TableColumn<>("Date");
+        c3.setCellValueFactory(param ->
+                new SimpleStringProperty(String.valueOf(((Order) param.getValue()).getOrderDate())));
         TableColumn<Object, String> c4 = new TableColumn<>("Status");
+        c4.setCellValueFactory(param ->
+                new SimpleStringProperty(((Order) param.getValue()).getStatus()));
 
         tableView.getColumns().addAll(c1, c2, c3, c4);
 
@@ -104,9 +115,17 @@ public class MainPageController {
         tableView.getColumns().clear();
 
         TableColumn<Object, String> c1 = new TableColumn<>("Sale ID");
+        c1.setCellValueFactory(param ->
+                new SimpleStringProperty(String.valueOf(((Sale) param.getValue()).getId())));
         TableColumn<Object, String> c2 = new TableColumn<>("Product ID");
+        c2.setCellValueFactory(param ->
+                new SimpleStringProperty(((Sale) param.getValue()).getProduct().getName()));
         TableColumn<Object, String> c3 = new TableColumn<>("Order ID");
+        c3.setCellValueFactory(param ->
+                new SimpleStringProperty(String.valueOf(((Sale) param.getValue()).getOrder().getId())));
         TableColumn<Object, String> c4 = new TableColumn<>("Quantity");
+        c4.setCellValueFactory(param ->
+                new SimpleStringProperty(String.valueOf(((Sale) param.getValue()).getQuantity())));
 
         tableView.getColumns().addAll(c1, c2, c3, c4);
 
@@ -126,9 +145,17 @@ public class MainPageController {
         tableView.getColumns().clear();
 
         TableColumn<Object, String> c1 = new TableColumn<>("Customer ID");
+        c1.setCellValueFactory(param ->
+                new SimpleStringProperty(String.valueOf(((Customer) param.getValue()).getId())));
         TableColumn<Object, String> c2 = new TableColumn<>("Name");
+        c2.setCellValueFactory(param ->
+                new SimpleStringProperty(((Customer) param.getValue()).getName()));
         TableColumn<Object, String> c3 = new TableColumn<>("Email");
+        c3.setCellValueFactory(param ->
+                new SimpleStringProperty(((Customer) param.getValue()).getEmail()));
         TableColumn<Object, String> c4 = new TableColumn<>("Phone");
+        c4.setCellValueFactory(param ->
+                new SimpleStringProperty(((Customer) param.getValue()).getPhone()));
 
         tableView.getColumns().addAll(c1, c2, c3, c4);
 
