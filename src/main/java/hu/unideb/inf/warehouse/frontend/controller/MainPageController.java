@@ -209,21 +209,25 @@ public class MainPageController {
 
     @FXML
     public void onAdd() {
-        if (active != ActiveTable.PRODUCTS) {
-            new Alert(Alert.AlertType.WARNING,
-                    "Adding is only available for Products right now.").showAndWait();
-            return;
-        }
-
         try {
-            Product p = Product.builder()
-                    .name(field1Input.getText())
-                    .category(field2Input.getText())
-                    .price(Double.parseDouble(field3Input.getText()))
-                    .stock(Integer.parseInt(field4Input.getText()))
-                    .build();
-
-            productRepository.save(p);
+            switch (active) {
+                case PRODUCTS -> {
+                    Product p = Product.builder()
+                            .name(field1Input.getText())
+                            .category(field2Input.getText())
+                            .price(Double.parseDouble(field3Input.getText()))
+                            .stock(Integer.parseInt(field4Input.getText()))
+                            .build();
+                    productRepository.save(p);
+                }
+                case CUSTOMERS -> {
+                    Customer c = Customer.builder()
+                            .name(field1Input.getText())
+                            .email(field2Input.getText())
+                            .phone(field3Input.getText())
+                            .build();
+                }
+            }
             refreshTable();
 
         } catch (Exception e) {
