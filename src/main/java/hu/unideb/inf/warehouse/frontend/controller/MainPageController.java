@@ -25,10 +25,10 @@ public class MainPageController {
     @FXML private TableColumn<Product, Number> colField3;
     @FXML private TableColumn<Product, Number> colField4;
 
-    @FXML private TextField nameInput;
-    @FXML private TextField categoryInput;
-    @FXML private TextField priceInput;
-    @FXML private TextField stockInput;
+    @FXML private TextField field1Input;
+    @FXML private TextField field2Input;
+    @FXML private TextField field3Input;
+    @FXML private TextField field4Input;
 
     @FXML private TextField searchField;
 
@@ -53,10 +53,10 @@ public class MainPageController {
     public void onAdd() {
         try {
             Product p = Product.builder()
-                    .name(nameInput.getText())
-                    .category(categoryInput.getText())
-                    .price(Double.parseDouble(priceInput.getText()))
-                    .stock(Integer.parseInt(stockInput.getText()))
+                    .name(field1Input.getText())
+                    .category(field2Input.getText())
+                    .price(Double.parseDouble(field3Input.getText()))
+                    .stock(Integer.parseInt(field4Input.getText()))
                     .build();
 
             productRepository.save(p);
@@ -89,10 +89,10 @@ public class MainPageController {
 
     @FXML
     public void onClear() {
-        nameInput.clear();
-        categoryInput.clear();
-        priceInput.clear();
-        stockInput.clear();
+        field1Input.clear();
+        field2Input.clear();
+        field3Input.clear();
+        field4Input.clear();
     }
 
     @FXML
