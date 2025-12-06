@@ -29,6 +29,7 @@ public class MainPageController {
     @FXML private TextField field2Input;
     @FXML private TextField field3Input;
     @FXML private TextField field4Input;
+    @FXML private TextField field5Input;
 
     @FXML private TextField searchField;
 
@@ -64,10 +65,12 @@ public class MainPageController {
 
         tableView.getColumns().addAll(c1, c2, c3, c4);
 
+        field5Input.setPromptText("Product ID");
         field1Input.setPromptText("Name");
         field2Input.setPromptText("Category");
         field3Input.setPromptText("Price");
         field4Input.setPromptText("Stock");
+
     }
 
     private void loadOrdersTable() {
@@ -84,6 +87,10 @@ public class MainPageController {
         field2Input.setPromptText("Customer ID");
         field3Input.setPromptText("Order Date");
         field4Input.setPromptText("Status");
+
+        // nincs 5. input
+        field5Input.setPromptText("");
+        field5Input.setDisable(true);
 
         data.clear();
     }
@@ -103,6 +110,10 @@ public class MainPageController {
         field3Input.setPromptText("Order ID");
         field4Input.setPromptText("Quantity");
 
+        // nincs 5. input
+        field5Input.setPromptText("");
+        field5Input.setDisable(true);
+
         data.clear();
     }
 
@@ -120,6 +131,10 @@ public class MainPageController {
         field2Input.setPromptText("Name");
         field3Input.setPromptText("Email");
         field4Input.setPromptText("Phone");
+
+        // nincs 5. input
+        field5Input.setPromptText("");
+        field5Input.setDisable(true);
 
         data.clear();
     }
