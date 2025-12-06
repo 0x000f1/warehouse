@@ -207,6 +207,7 @@ public class MainPageController {
         active = ActiveTable.PRODUCTS;
         loadProductsTable();
         refreshTable();
+        onClear();
     }
 
     @FXML
@@ -214,6 +215,7 @@ public class MainPageController {
         active = ActiveTable.ORDERS;
         loadOrdersTable();
         refreshTable();
+        onClear();
     }
 
     @FXML
@@ -221,6 +223,7 @@ public class MainPageController {
         active = ActiveTable.SALES;
         loadSalesTable();
         refreshTable();
+        onClear();
     }
 
     @FXML
@@ -228,6 +231,7 @@ public class MainPageController {
         active = ActiveTable.CUSTOMERS;
         loadCustomersTable();
         refreshTable();
+        onClear();
     }
 
     @FXML
