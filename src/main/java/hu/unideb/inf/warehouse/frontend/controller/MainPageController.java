@@ -4,6 +4,7 @@ import hu.unideb.inf.warehouse.model.Product;
 import hu.unideb.inf.warehouse.repository.ProductRepository;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -47,6 +48,10 @@ public class MainPageController {
     private void loadProductsTable() {
         tableView.getColumns().clear();
 
+        TableColumn<Object, String> c0 = new TableColumn<>("ID");
+        c0.setCellValueFactory(param ->
+               new SimpleStringProperty(String.valueOf(((Product) param.getValue()).getId())));
+
         TableColumn<Object, String> c1 = new TableColumn<>("Name");
         c1.setCellValueFactory(param ->
                 new SimpleStringProperty(((Product) param.getValue()).getName()));
@@ -63,7 +68,7 @@ public class MainPageController {
         c4.setCellValueFactory(param ->
                 new SimpleIntegerProperty(((Product) param.getValue()).getStock()));
 
-        tableView.getColumns().addAll(c1, c2, c3, c4);
+        tableView.getColumns().addAll(c0, c1, c2, c3, c4);
 
         field5Input.setPromptText("Product ID");
         field1Input.setPromptText("Name");
