@@ -273,14 +273,13 @@ public class MainPageController {
                     Long orderId = Long.parseLong(field1Input.getText());
                     Order order = orderRepository.findById(orderId).orElse(null);
 
-                    Long productId = Long.parseLong(field1Input.getText());
+                    Long productId = Long.parseLong(field2Input.getText());
                     Product product = productRepository.findById(productId).orElse(null);
 
                     Sale s = Sale.builder()
                             .order(order)
                             .product(product)
                             .quantity(Integer.parseInt(field3Input.getText()))
-                            .total(Double.parseDouble(field4Input.getText()))
                             .build();
                     saleRepository.save(s);
 
