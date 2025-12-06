@@ -1,0 +1,26 @@
+package hu.unideb.inf.warehouse.model;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.util.List;
+
+@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class Product {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
+    private String category;
+    private Double price;
+    private Integer stock;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<Sale> sales;
+}
