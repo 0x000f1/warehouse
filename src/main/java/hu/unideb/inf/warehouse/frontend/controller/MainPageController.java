@@ -194,6 +194,9 @@ public class MainPageController {
     private void refreshTable() {
         switch (active) {
             case PRODUCTS -> data.setAll(productRepository.findAll());
+            case CUSTOMERS -> data.setAll(customerRepository.findAll());
+            case ORDERS -> data.setAll(orderRepository.findAll());
+            case SALES -> data.setAll(saleRepository.findAll());
             default -> data.clear();
         }
         tableView.setItems(data);
