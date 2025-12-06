@@ -97,16 +97,29 @@ public class MainPageController {
 
     @FXML
     public void onSearch() {
-        String text = searchField.getText();
+        String text = searchField.getText().toLowerCase().trim();
 
         if (text.isBlank()) {
             data.setAll(productRepository.findAll());
-        } else {
-            data.setAll(
-                    productRepository.findByNameContainingIgnoreCase(text)
-            );
+            return;
         }
+
+        data.setAll(
+                productRepository.findAll().stream()
+                        .filter(p ->
+                                (p.getName() != null && p.getName().toLowerCase().contains(text)) ||
+                                        (p.getCategory() != null && p.getCategory().toLowerCase().contains(text)) ||
+
+                                        (p.getPrice() != null &&
+                                                String.valueOf(p.getPrice()).toLowerCase().contains(text)) ||
+
+                                        (p.getStock() != null &&
+                                                String.valueOf(p.getStock()).toLowerCase().contains(text))
+                        )
+                        .toList()
+        );
     }
+
 
     @FXML
     public void selectProducts() {
