@@ -18,12 +18,12 @@ public class MainPageController {
     @Autowired
     private ProductRepository productRepository;
 
-    @FXML private TableView<Product> tableView;
+    @FXML private TableView<Object> tableView;
 
-    @FXML private TableColumn<Product, String> colField1;
-    @FXML private TableColumn<Product, String> colField2;
-    @FXML private TableColumn<Product, Number> colField3;
-    @FXML private TableColumn<Product, Number> colField4;
+    @FXML private TableColumn<Object, ?> colField1;
+    @FXML private TableColumn<Object, ?> colField2;
+    @FXML private TableColumn<Object, ?> colField3;
+    @FXML private TableColumn<Object, ?> colField4;
 
     @FXML private TextField field1Input;
     @FXML private TextField field2Input;
@@ -32,25 +32,142 @@ public class MainPageController {
 
     @FXML private TextField searchField;
 
-    private ObservableList<Product> data = FXCollections.observableArrayList();
+    private ObservableList<Object> data = FXCollections.observableArrayList();
+
+    private enum ActiveTable { PRODUCTS, ORDERS, SALES, CUSTOMERS }
+    private ActiveTable active = ActiveTable.PRODUCTS;
 
     @FXML
     public void initialize() {
-        colField1.setCellValueFactory(param ->
-                new SimpleStringProperty(param.getValue().getName()));
-        colField2.setCellValueFactory(param ->
-                new SimpleStringProperty(param.getValue().getCategory()));
-        colField3.setCellValueFactory(param ->
-                new SimpleDoubleProperty(param.getValue().getPrice()));
-        colField4.setCellValueFactory(param ->
-                new SimpleIntegerProperty(param.getValue().getStock()));
+        loadProductsTable();
+        refreshTable();
+    }
 
-        data.addAll(productRepository.findAll());
+    private void loadProductsTable() {
+        tableView.getColumns().clear();
+
+        TableColumn<Object, String> c1 = new TableColumn<>("Name");
+        c1.setCellValueFactory(param ->
+                new SimpleStringProperty(((Product) param.getValue()).getName()));
+
+        TableColumn<Object, String> c2 = new TableColumn<>("Category");
+        c2.setCellValueFactory(param ->
+                new SimpleStringProperty(((Product) param.getValue()).getCategory()));
+
+        TableColumn<Object, Number> c3 = new TableColumn<>("Price");
+        c3.setCellValueFactory(param ->
+                new SimpleDoubleProperty(((Product) param.getValue()).getPrice()));
+
+        TableColumn<Object, Number> c4 = new TableColumn<>("Stock");
+        c4.setCellValueFactory(param ->
+                new SimpleIntegerProperty(((Product) param.getValue()).getStock()));
+
+        tableView.getColumns().addAll(c1, c2, c3, c4);
+
+        field1Input.setPromptText("Name");
+        field2Input.setPromptText("Category");
+        field3Input.setPromptText("Price");
+        field4Input.setPromptText("Stock");
+    }
+
+    private void loadOrdersTable() {
+        tableView.getColumns().clear();
+
+        TableColumn<Object, String> c1 = new TableColumn<>("Order ID");
+        TableColumn<Object, String> c2 = new TableColumn<>("Customer ID");
+        TableColumn<Object, String> c3 = new TableColumn<>("Date");
+        TableColumn<Object, String> c4 = new TableColumn<>("Status");
+
+        tableView.getColumns().addAll(c1, c2, c3, c4);
+
+        field1Input.setPromptText("Order ID");
+        field2Input.setPromptText("Customer ID");
+        field3Input.setPromptText("Order Date");
+        field4Input.setPromptText("Status");
+
+        data.clear();
+    }
+
+    private void loadSalesTable() {
+        tableView.getColumns().clear();
+
+        TableColumn<Object, String> c1 = new TableColumn<>("Sale ID");
+        TableColumn<Object, String> c2 = new TableColumn<>("Product ID");
+        TableColumn<Object, String> c3 = new TableColumn<>("Order ID");
+        TableColumn<Object, String> c4 = new TableColumn<>("Quantity");
+
+        tableView.getColumns().addAll(c1, c2, c3, c4);
+
+        field1Input.setPromptText("Sale ID");
+        field2Input.setPromptText("Product ID");
+        field3Input.setPromptText("Order ID");
+        field4Input.setPromptText("Quantity");
+
+        data.clear();
+    }
+
+    private void loadCustomersTable() {
+        tableView.getColumns().clear();
+
+        TableColumn<Object, String> c1 = new TableColumn<>("Customer ID");
+        TableColumn<Object, String> c2 = new TableColumn<>("Name");
+        TableColumn<Object, String> c3 = new TableColumn<>("Email");
+        TableColumn<Object, String> c4 = new TableColumn<>("Phone");
+
+        tableView.getColumns().addAll(c1, c2, c3, c4);
+
+        field1Input.setPromptText("ID");
+        field2Input.setPromptText("Name");
+        field3Input.setPromptText("Email");
+        field4Input.setPromptText("Phone");
+
+        data.clear();
+    }
+
+    private void refreshTable() {
+        switch (active) {
+            case PRODUCTS -> data.setAll(productRepository.findAll());
+            default -> data.clear();
+        }
         tableView.setItems(data);
     }
 
     @FXML
+    public void selectProducts() {
+        active = ActiveTable.PRODUCTS;
+        loadProductsTable();
+        refreshTable();
+    }
+
+    @FXML
+    public void selectOrders() {
+        active = ActiveTable.ORDERS;
+        loadOrdersTable();
+        refreshTable();
+    }
+
+    @FXML
+    public void selectSales() {
+        active = ActiveTable.SALES;
+        loadSalesTable();
+        refreshTable();
+    }
+
+    @FXML
+    public void selectCustomers() {
+        active = ActiveTable.CUSTOMERS;
+        loadCustomersTable();
+        refreshTable();
+    }
+
+    @FXML
     public void onAdd() {
+        if (active != ActiveTable.PRODUCTS) {
+            new Alert(Alert.AlertType.WARNING,
+                    "Adding is only available for Products right now.").showAndWait();
+            return;
+        }
+
         try {
             Product p = Product.builder()
                     .name(field1Input.getText())
@@ -60,8 +177,8 @@ public class MainPageController {
                     .build();
 
             productRepository.save(p);
+            refreshTable();
 
-            data.setAll(productRepository.findAll());
         } catch (Exception e) {
             new Alert(Alert.AlertType.ERROR, "Invalid numeric values!").showAndWait();
         }
@@ -69,22 +186,17 @@ public class MainPageController {
 
     @FXML
     public void onRemove() {
-        Product selected = tableView.getSelectionModel().getSelectedItem();
-        if (selected == null) {
-            Alert warning = new Alert(Alert.AlertType.WARNING, "Please select a product to remove!");
-            warning.showAndWait();
+        if (active != ActiveTable.PRODUCTS) {
+            new Alert(Alert.AlertType.WARNING,
+                    "Removing is only available for Products right now.").showAndWait();
             return;
         }
 
-        Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION,
-                "Are you sure you want to delete this product?", ButtonType.YES, ButtonType.NO);
+        Product selected = (Product) tableView.getSelectionModel().getSelectedItem();
+        if (selected == null) return;
 
-        confirmation.showAndWait().ifPresent(response -> {
-            if (response == ButtonType.YES) {
-                productRepository.delete(selected);
-                data.remove(selected);
-            }
-        });
+        productRepository.delete(selected);
+        refreshTable();
     }
 
     @FXML
@@ -97,67 +209,28 @@ public class MainPageController {
 
     @FXML
     public void onSearch() {
+        if (active != ActiveTable.PRODUCTS) {
+            new Alert(Alert.AlertType.INFORMATION,
+                    "Search works only for Products at this stage.").showAndWait();
+            return;
+        }
+
         String text = searchField.getText().toLowerCase().trim();
 
         if (text.isBlank()) {
-            data.setAll(productRepository.findAll());
+            refreshTable();
             return;
         }
 
         data.setAll(
                 productRepository.findAll().stream()
                         .filter(p ->
-                                (p.getName() != null && p.getName().toLowerCase().contains(text)) ||
-                                        (p.getCategory() != null && p.getCategory().toLowerCase().contains(text)) ||
-
-                                        (p.getPrice() != null &&
-                                                String.valueOf(p.getPrice()).toLowerCase().contains(text)) ||
-
-                                        (p.getStock() != null &&
-                                                String.valueOf(p.getStock()).toLowerCase().contains(text))
+                                p.getName().toLowerCase().contains(text) ||
+                                        p.getCategory().toLowerCase().contains(text) ||
+                                        String.valueOf(p.getPrice()).contains(text) ||
+                                        String.valueOf(p.getStock()).contains(text)
                         )
                         .toList()
         );
-    }
-
-
-    @FXML
-    public void selectProducts() {
-        // Products már működik, csak frissítjük
-        data.setAll(productRepository.findAll());
-        tableView.setItems(data);
-
-    }
-
-    @FXML
-    public void selectOrders() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setHeaderText(null);
-        alert.setContentText("Orders view is not implemented yet.");
-        alert.showAndWait();
-        field1Input.setPromptText("ID");
-        field2Input.setPromptText("Customer ID");
-        field3Input.setPromptText("Order Date");
-        field4Input.setPromptText("Status");
-    }
-
-    @FXML
-    public void selectSales() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setHeaderText(null);
-        alert.setContentText("Sales view is not implemented yet.");
-        alert.showAndWait();
-    }
-
-    @FXML
-    public void selectCustomers() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setHeaderText(null);
-        alert.setContentText("Customers view is not implemented yet.");
-        alert.showAndWait();
-        field1Input.setPromptText("ID");
-        field2Input.setPromptText("Name");
-        field3Input.setPromptText("E-mail");
-        field4Input.setPromptText("Phone");
     }
 }
