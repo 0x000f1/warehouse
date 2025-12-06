@@ -78,6 +78,7 @@
                   <TextField fx:id="field2Input" promptText="Field2 Value" />
                   <TextField fx:id="field3Input" promptText="Field3 Value" />
                   <TextField fx:id="field4Input" promptText="Field4 Value" />
+                  <TextField fx:id="field5Input" promptText="Field5 Value" />
 
                   <HBox alignment="CENTER">
                       <children>

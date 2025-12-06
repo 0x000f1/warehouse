@@ -113,6 +113,7 @@ public class MainPageController {
         // Products már működik, csak frissítjük
         data.setAll(productRepository.findAll());
         tableView.setItems(data);
+
     }
 
     @FXML
@@ -121,6 +122,10 @@ public class MainPageController {
         alert.setHeaderText(null);
         alert.setContentText("Orders view is not implemented yet.");
         alert.showAndWait();
+        field1Input.setPromptText("ID");
+        field2Input.setPromptText("Customer ID");
+        field3Input.setPromptText("Order Date");
+        field4Input.setPromptText("Status");
     }
 
     @FXML
@@ -137,5 +142,9 @@ public class MainPageController {
         alert.setHeaderText(null);
         alert.setContentText("Customers view is not implemented yet.");
         alert.showAndWait();
+        field1Input.setPromptText("ID");
+        field2Input.setPromptText("Name");
+        field3Input.setPromptText("E-mail");
+        field4Input.setPromptText("Phone");
     }
 }

@@ -23,8 +23,8 @@ public class JavaFXApplication extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MainPage.fxml"));
         loader.setControllerFactory(ctx::getBean);
 
-        Parent root = loader.load(); // ✅ Parent
-        stage.setScene(new Scene(root)); // ✅ Scene-be csomagoljuk
+        Parent root = loader.load();
+        stage.setScene(new Scene(root));
         stage.setTitle("Warehouse");
         stage.show();
     }
