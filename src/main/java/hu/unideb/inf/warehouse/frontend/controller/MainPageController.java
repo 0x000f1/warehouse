@@ -42,6 +42,8 @@ public class MainPageController {
 
     @FXML private TextField searchField;
 
+    @FXML private Label statusLabel;
+
     private ObservableList<Object> data = FXCollections.observableArrayList();
     @Autowired
     private CustomerRepository customerRepository;
@@ -57,6 +59,7 @@ public class MainPageController {
     public void initialize() {
         loadProductsTable();
         refreshTable();
+        setStatus("Ready");
     }
 
     private void loadProductsTable() {
@@ -142,8 +145,16 @@ public class MainPageController {
         TableColumn<Object, String> c4 = new TableColumn<>("Quantity");
         c4.setCellValueFactory(param ->
                 new SimpleStringProperty(String.valueOf(((Sale) param.getValue()).getQuantity())));
+        TableColumn<Object, String> c5 = new TableColumn<>("Total Price");
+        c5.setCellValueFactory(param ->{
+            Sale sale = (Sale) param.getValue();
+            double price = sale.getProduct().getPrice();
+            int quantity = sale.getQuantity();
+            double total =  price * quantity;
+            return  new SimpleStringProperty(String.format("%.3f", total));
 
-        tableView.getColumns().addAll(c1, c2, c3, c4);
+        });
+        tableView.getColumns().addAll(c1, c2, c3, c4,c5);
 
         field1Input.setPromptText("Order ID");
         field2Input.setPromptText("Product ID");
@@ -208,6 +219,8 @@ public class MainPageController {
         loadProductsTable();
         refreshTable();
         onClear();
+        setStatus("Viewing products.");
+
     }
 
     @FXML
@@ -216,6 +229,7 @@ public class MainPageController {
         loadOrdersTable();
         refreshTable();
         onClear();
+        setStatus("Viewing orders.");
     }
 
     @FXML
@@ -224,6 +238,7 @@ public class MainPageController {
         loadSalesTable();
         refreshTable();
         onClear();
+        setStatus("Viewing sales.");
     }
 
     @FXML
@@ -232,6 +247,7 @@ public class MainPageController {
         loadCustomersTable();
         refreshTable();
         onClear();
+        setStatus("Viewing customers.");
     }
 
     @FXML
@@ -246,6 +262,7 @@ public class MainPageController {
                             .stock(Integer.parseInt(field4Input.getText()))
                             .build();
                     productRepository.save(p);
+                    setStatus("Product added successfully.");
                 }
 
 
@@ -256,6 +273,7 @@ public class MainPageController {
                             .phone(field3Input.getText())
                             .build();
                     customerRepository.save(c);
+                    setStatus("Customer added successfully.");
                 }
 
 
@@ -270,6 +288,7 @@ public class MainPageController {
                             .build();
 
                     orderRepository.save(o);
+                    setStatus("Order added successfully.");
                 }
 
 
@@ -277,15 +296,27 @@ public class MainPageController {
                     Long orderId = Long.parseLong(field1Input.getText());
                     Order order = orderRepository.findById(orderId).orElse(null);
 
+                    if (order == null) {
+                        throw new IllegalArgumentException("Order not found");
+                    }
+
                     Long productId = Long.parseLong(field2Input.getText());
                     Product product = productRepository.findById(productId).orElse(null);
+
+                    if (product == null) {
+                        throw new IllegalArgumentException("Product not found");
+                    }
+
+                    double total = Integer.parseInt(field3Input.getText()) *  product.getPrice();
 
                     Sale s = Sale.builder()
                             .order(order)
                             .product(product)
                             .quantity(Integer.parseInt(field3Input.getText()))
+                            .total(total)
                             .build();
                     saleRepository.save(s);
+                    setStatus("Sale added successfully.");
 
                 }
             }
@@ -293,6 +324,7 @@ public class MainPageController {
 
         } catch (Exception e) {
             new Alert(Alert.AlertType.ERROR, "Invalid numeric values!").showAndWait();
+            setStatus("Failed to add item: invalid numeric values.");
         }
     }
 
@@ -302,14 +334,18 @@ public class MainPageController {
 
         if (selected == null) {
             new Alert(Alert.AlertType.ERROR, "Invalid selection!").showAndWait();
+            setStatus("Remove failed: no item selected.");
             return;
         }
 
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure tou want to delete this item?", ButtonType.YES, ButtonType.NO);
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete this item?", ButtonType.YES, ButtonType.NO);
         confirm.setHeaderText(null);
         confirm.showAndWait();
 
-        if (confirm.getResult() != ButtonType.YES) return;
+        if (confirm.getResult() != ButtonType.YES) {
+            setStatus("Remove cancelled.");
+            return;
+        }
 
         switch (active) {
             case PRODUCTS -> productRepository.delete((Product) selected);
@@ -319,6 +355,7 @@ public class MainPageController {
         }
 
         refreshTable();
+        setStatus("Item removed successfully.");
     }
 
     @FXML
@@ -335,6 +372,7 @@ public class MainPageController {
         if (active != ActiveTable.PRODUCTS) {
             new Alert(Alert.AlertType.INFORMATION,
                     "Search works only for Products at this stage.").showAndWait();
+            setStatus("Search is only available for products.");
             return;
         }
 
@@ -342,6 +380,7 @@ public class MainPageController {
 
         if (text.isBlank()) {
             refreshTable();
+            setStatus("Search cleared, showing all products.");
             return;
         }
 
@@ -355,5 +394,13 @@ public class MainPageController {
                         )
                         .toList()
         );
+
+        setStatus("Search completed: " + data.size() + " product(s) found.");
+    }
+
+    private void setStatus(String message) {
+        if (statusLabel != null) {
+            statusLabel.setText(message);
+        }
     }
 }

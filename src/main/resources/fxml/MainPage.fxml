@@ -99,5 +99,16 @@
          </padding>
           </VBox>
       </right>
+    <bottom>
+        <HBox alignment="CENTER_LEFT" spacing = "15.0">
+            <children>
+                <Label fx:id="statusLabel" text="Ready" />
+            </children>
+            <padding>
+                <Insets left="10.0" top="5.0" right="10.0" bottom="5.0" />
+            </padding>
+        </HBox>
+
+    </bottom>
 
   </BorderPane>
