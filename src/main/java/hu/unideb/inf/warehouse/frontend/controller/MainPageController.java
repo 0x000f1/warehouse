@@ -18,6 +18,13 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import org.springframework.context.ApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
+
 
 import java.time.LocalDateTime;
 
@@ -51,6 +58,8 @@ public class MainPageController {
     private OrderRepository orderRepository;
     @Autowired
     private SaleRepository saleRepository;
+    @Autowired
+    private ApplicationContext applicationContext;
 
     private enum ActiveTable { PRODUCTS, ORDERS, SALES, CUSTOMERS }
     private ActiveTable active = ActiveTable.PRODUCTS;
@@ -403,4 +412,21 @@ public class MainPageController {
             statusLabel.setText(message);
         }
     }
+
+    @FXML
+    private void openDashboard() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Dashboard.fxml"));
+            loader.setControllerFactory(applicationContext::getBean);
+
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Dashboard");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }
