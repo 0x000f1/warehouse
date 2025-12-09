@@ -24,6 +24,9 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.springframework.context.ApplicationContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.util.converter.DoubleStringConverter;
+import javafx.util.converter.IntegerStringConverter;
 
 
 import java.time.LocalDateTime;
@@ -69,6 +72,7 @@ public class MainPageController {
         loadProductsTable();
         refreshTable();
         setStatus("Ready");
+        tableView.setEditable(true);
     }
 
     private void loadProductsTable() {
@@ -81,18 +85,53 @@ public class MainPageController {
         TableColumn<Object, String> c1 = new TableColumn<>("Name");
         c1.setCellValueFactory(param ->
                 new SimpleStringProperty(((Product) param.getValue()).getName()));
+        c1.setCellFactory(TextFieldTableCell.forTableColumn());
+        c1.setOnEditCommit(event -> {
+            Product p = (Product) event.getRowValue();
+            p.setName(event.getNewValue());
+            productRepository.save(p);
+        });
 
         TableColumn<Object, String> c2 = new TableColumn<>("Category");
         c2.setCellValueFactory(param ->
                 new SimpleStringProperty(((Product) param.getValue()).getCategory()));
+        c2.setCellFactory(TextFieldTableCell.forTableColumn());
+        c2.setOnEditCommit(event -> {
+            Product p = (Product) event.getRowValue();
+            p.setCategory(event.getNewValue());
+            productRepository.save(p);
+        });
 
         TableColumn<Object, Number> c3 = new TableColumn<>("Price");
         c3.setCellValueFactory(param ->
                 new SimpleDoubleProperty(((Product) param.getValue()).getPrice()));
 
+        c3.setCellFactory(column -> {
+            TextFieldTableCell<Object, Double> cell =
+                    new TextFieldTableCell<>(new DoubleStringConverter());
+            return (TableCell<Object, Number>) (TableCell<?, ?>) cell;
+        });
+        c3.setOnEditCommit(event -> {
+            Product p = (Product) event.getRowValue();
+            Number newVal = event.getNewValue();
+            p.setPrice(newVal.doubleValue());
+            productRepository.save(p);
+        });
+
         TableColumn<Object, Number> c4 = new TableColumn<>("Stock");
         c4.setCellValueFactory(param ->
                 new SimpleIntegerProperty(((Product) param.getValue()).getStock()));
+        c4.setCellFactory(column -> {
+            TextFieldTableCell<Object, Integer> cell =
+                    new TextFieldTableCell<>(new IntegerStringConverter());
+            return (TableCell<Object, Number>) (TableCell<?, ?>) cell;
+        });
+        c4.setOnEditCommit(event -> {
+            Product p = (Product) event.getRowValue();
+            Number newVal = event.getNewValue();
+            p.setStock(newVal.intValue());
+            productRepository.save(p);
+        });
 
         tableView.getColumns().addAll(c0, c1, c2, c3, c4);
 
