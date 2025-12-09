@@ -12,31 +12,41 @@
 
     <top>
         <Label text="Dashboard" BorderPane.alignment="CENTER">
-            <font>
-                <Font size="24.0" />
-            </font>
-            <padding>
-                <Insets top="10" right="10" bottom="10" left="10"/>
-            </padding>
+            <font><Font size="26"/></font>
+            <padding><Insets top="15" bottom="15"/></padding>
         </Label>
     </top>
 
     <center>
-        <GridPane hgap="20" vgap="15">
-            <padding><Insets top="20" left="20" right="20" bottom="20"/></padding>
+        <GridPane hgap="15" vgap="20" alignment="TOP_CENTER">
+            <padding>
+                <Insets top="30" left="40" right="40" bottom="30"/>
+            </padding>
 
-            <Label text="Total products:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-            <Label fx:id="totalProductsLabel" text="0" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+            <Label text="Total products:" GridPane.rowIndex="0" GridPane.columnIndex="0"
+                   style="-fx-font-size: 16;" />
+            <Label text="Total customers:" GridPane.rowIndex="1" GridPane.columnIndex="0"
+                   style="-fx-font-size: 16;" />
+            <Label text="Total orders:" GridPane.rowIndex="2" GridPane.columnIndex="0"
+                   style="-fx-font-size: 16;" />
+            <Label text="Total revenue:" GridPane.rowIndex="3" GridPane.columnIndex="0"
+                   style="-fx-font-size: 16;" />
 
-            <Label text="Total customers:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-            <Label fx:id="totalCustomersLabel" text="0" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+            <Label fx:id="totalProductsLabel" text="0"
+                   style="-fx-font-size: 18; -fx-padding: 6 20 6 20; -fx-border-color: #cccccc; -fx-border-radius: 4;"
+                   GridPane.rowIndex="0" GridPane.columnIndex="1"/>
 
-            <Label text="Total orders:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-            <Label fx:id="totalOrdersLabel" text="0" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+            <Label fx:id="totalCustomersLabel" text="0"
+                   style="-fx-font-size: 18; -fx-padding: 6 20 6 20; -fx-border-color: #cccccc; -fx-border-radius: 4;"
+                   GridPane.rowIndex="1" GridPane.columnIndex="1"/>
 
-            <Label text="Total revenue:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-            <Label fx:id="totalRevenueLabel" text="0.00" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+            <Label fx:id="totalOrdersLabel" text="0"
+                   style="-fx-font-size: 18; -fx-padding: 6 20 6 20; -fx-border-color: #cccccc; -fx-border-radius: 4;"
+                   GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+            <Label fx:id="totalRevenueLabel" text="0.00"
+                   style="-fx-font-size: 18; -fx-padding: 6 20 6 20; -fx-border-color: #cccccc; -fx-border-radius: 4;"
+                   GridPane.rowIndex="3" GridPane.columnIndex="1"/>
         </GridPane>
     </center>
-
 </BorderPane>
