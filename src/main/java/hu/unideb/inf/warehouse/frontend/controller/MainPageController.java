@@ -344,10 +344,23 @@ public class MainPageController {
 
 
                 case CUSTOMERS -> {
+                    String name = field1Input.getText();
+                    String email = field2Input.getText();
+                    String phone = field3Input.getText();
+
+                    boolean exists = customerRepository.findAll().stream()
+                            .anyMatch(c -> c.getPhone().equals(phone));
+
+                    if (exists) {
+                        new Alert(Alert.AlertType.ERROR, "This phone number is already in use!").showAndWait();
+                        setStatus("Customer add failed: phone already exists.");
+                        return;
+                    }
+
                     Customer c = Customer.builder()
-                            .name(field1Input.getText())
-                            .email(field2Input.getText())
-                            .phone(field3Input.getText())
+                            .name(name)
+                            .email(email)
+                            .phone(phone)
                             .build();
                     customerRepository.save(c);
                     setStatus("Customer added successfully.");
