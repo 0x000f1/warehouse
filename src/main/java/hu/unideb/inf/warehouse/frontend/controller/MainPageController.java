@@ -417,34 +417,76 @@ public class MainPageController {
 
     @FXML
     public void onSearch() {
-        if (active != ActiveTable.PRODUCTS) {
-            new Alert(Alert.AlertType.INFORMATION,
-                    "Search works only for Products at this stage.").showAndWait();
-            setStatus("Search is only available for products.");
-            return;
-        }
 
         String text = searchField.getText().toLowerCase().trim();
 
         if (text.isBlank()) {
             refreshTable();
-            setStatus("Search cleared, showing all products.");
+            setStatus("Search cleared, showing all entries.");
             return;
         }
 
-        data.setAll(
-                productRepository.findAll().stream()
-                        .filter(p ->
-                                p.getName().toLowerCase().contains(text) ||
-                                        p.getCategory().toLowerCase().contains(text) ||
-                                        String.valueOf(p.getPrice()).contains(text) ||
-                                        String.valueOf(p.getStock()).contains(text)
-                        )
-                        .toList()
-        );
+        switch (active) {
+            case PRODUCTS -> {
+                data.setAll(
+                        productRepository.findAll().stream()
+                                .filter(p ->
+                                        p.getName().toLowerCase().contains(text) ||
+                                                p.getCategory().toLowerCase().contains(text) ||
+                                                String.valueOf(p.getPrice()).contains(text) ||
+                                                String.valueOf(p.getStock()).contains(text)
+                                )
+                                .toList()
+                );
+                setStatus("Search completed: " + data.size() + " matching product(s).");
+            }
 
-        setStatus("Search completed: " + data.size() + " product(s) found.");
+            case CUSTOMERS -> {
+                data.setAll(
+                        customerRepository.findAll().stream()
+                                .filter(c ->
+                                        c.getName().toLowerCase().contains(text) ||
+                                                c.getEmail().toLowerCase().contains(text) ||
+                                                c.getPhone().toLowerCase().contains(text)
+                                )
+                                .toList()
+                );
+                setStatus("Search completed: " + data.size() + " matching customer(s).");
+            }
+
+            case ORDERS -> {
+                data.setAll(
+                        orderRepository.findAll().stream()
+                                .filter(o ->
+                                        String.valueOf(o.getId()).contains(text) ||
+                                                o.getCustomer().getName().toLowerCase().contains(text) ||
+                                                String.valueOf(o.getOrderDate()).toLowerCase().contains(text) ||
+                                                o.getStatus().toLowerCase().contains(text)
+                                )
+                                .toList()
+                );
+                setStatus("Search completed: " + data.size() + " matching order(s).");
+            }
+
+            case SALES -> {
+                data.setAll(
+                        saleRepository.findAll().stream()
+                                .filter(s ->
+                                        String.valueOf(s.getId()).contains(text) ||
+                                                s.getProduct().getName().toLowerCase().contains(text) ||
+                                                String.valueOf(s.getOrder().getId()).contains(text) ||
+                                                String.valueOf(s.getQuantity()).contains(text) ||
+                                                String.valueOf(s.getTotal()).contains(text)
+                                )
+                                .toList()
+                );
+                setStatus("Search completed: " + data.size() + " matching sale(s).");
+            }
+        }
+
+        tableView.setItems(data);
     }
+
 
     private void setStatus(String message) {
         if (statusLabel != null) {
