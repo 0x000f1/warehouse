@@ -161,6 +161,12 @@ public class MainPageController {
         TableColumn<Object, String> c4 = new TableColumn<>("Status");
         c4.setCellValueFactory(param ->
                 new SimpleStringProperty(((Order) param.getValue()).getStatus()));
+        c4.setCellFactory(TextFieldTableCell.forTableColumn());
+        c4.setOnEditCommit(event -> {
+            Order o = (Order) event.getRowValue();
+            o.setStatus(event.getNewValue());
+            orderRepository.save(o);
+        });
 
         tableView.getColumns().addAll(c1, c2, c3, c4);
 
@@ -193,6 +199,7 @@ public class MainPageController {
         TableColumn<Object, String> c4 = new TableColumn<>("Quantity");
         c4.setCellValueFactory(param ->
                 new SimpleStringProperty(String.valueOf(((Sale) param.getValue()).getQuantity())));
+
         TableColumn<Object, String> c5 = new TableColumn<>("Total Price");
         c5.setCellValueFactory(param ->{
             Sale sale = (Sale) param.getValue();
@@ -227,12 +234,30 @@ public class MainPageController {
         TableColumn<Object, String> c2 = new TableColumn<>("Name");
         c2.setCellValueFactory(param ->
                 new SimpleStringProperty(((Customer) param.getValue()).getName()));
+        c2.setCellFactory(TextFieldTableCell.forTableColumn());
+        c2.setOnEditCommit(event -> {
+            Customer c = (Customer) event.getRowValue();
+            c.setName(event.getNewValue());
+            customerRepository.save(c);
+        });
         TableColumn<Object, String> c3 = new TableColumn<>("Email");
         c3.setCellValueFactory(param ->
                 new SimpleStringProperty(((Customer) param.getValue()).getEmail()));
         TableColumn<Object, String> c4 = new TableColumn<>("Phone");
+        c3.setCellFactory(TextFieldTableCell.forTableColumn());
+        c3.setOnEditCommit(event -> {
+            Customer c = (Customer) event.getRowValue();
+            c.setEmail(event.getNewValue());
+            customerRepository.save(c);
+        });
         c4.setCellValueFactory(param ->
                 new SimpleStringProperty(((Customer) param.getValue()).getPhone()));
+        c4.setCellFactory(TextFieldTableCell.forTableColumn());
+        c4.setOnEditCommit(event -> {
+            Customer c = (Customer) event.getRowValue();
+            c.setPhone(event.getNewValue());
+            customerRepository.save(c);
+        });
 
         tableView.getColumns().addAll(c1, c2, c3, c4);
 
