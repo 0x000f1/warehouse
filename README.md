@@ -18,7 +18,7 @@ Nyomon követi a beérkezett és feldolgozás alatt lévő megrendeléseket.
 
 ### Értékesítések (Sales)
 Részletes információkat tárol a végrehajtott értékesítésekről és a hozzájuk tartozó termékekről.
-* **Adatok:** Eladási Azonosító (Sale ID), Termék Azonosító (Product ID), Megrendelés Azonosító (Order ID), Mennyiség (Quantity).
+* **Adatok:** Eladási Azonosító (Sale ID), Termék Azonosító (Product ID), Megrendelés Azonosító (Order ID), Mennyiség (Quantity), Összeg (Total Price).
 
 ### Ügyfelek (Customers)
 Kezeli az ügyfél adatokat.
@@ -34,7 +34,7 @@ Az alkalmazás intuitív felhasználói felülettel rendelkezik a táblázatos a
 * **Navigáció:** Négy fő fül (Products, Orders, Sales, Customers) között lehet váltani az adatok megjelenítéséhez.
 * **Keresés:** Van egy keresőmező az adatok gyors szűrésére.
 * **Adatkezelés (Add/Remove item):** Jobb oldalon találhatóak a mezők az új elemek hozzáadásához, valamint a meglévő elemek eltávolításához.
-
+* **Dashboard:** Egy külön Dashboard fül összesített adatokat jelenít meg (pl. termékek száma, rendelések száma, eladások összértéke) vizuálisan áttekinthető formában.
 ---
 
 ## Adatbázis séma
@@ -63,3 +63,15 @@ A táblák a következő **idegen kulcsokkal** kapcsolódnak egymáshoz:
 
 3.  **Termékek és Értékesítési Tételek (1:N):**
     * A **`sales`** tábla tartalmazza a **`product_id`** mezőt, amely a **`products.id`** elsődleges kulcsra mutat. Ez a kapcsolat rögzíti, hogy melyik terméket adták el az adott tétel keretében.
+
+---
+
+## Tesztelés
+
+Az alkalmazáshoz alap tesztek készültek JUnit segítségével:
+
+- **Entitás tesztek:** Product, Customer, Order, Sale – ellenőrzik, hogy a mezők helyesen tárolódnak (getter/setter működés).
+- **Adatbázis teszt:** ProductRepositoryTest – H2 memóriabeli adatbázison teszteli, hogy a mentés és lekérdezés működik.
+- **Alkalmazás teszt:** contextLoads() – ellenőrzi, hogy a Spring alkalmazás hiba nélkül elindul.
+
+A tesztek sikeresen futnak, és igazolják, hogy az alap funkciók stabilan működnek.
