@@ -348,12 +348,20 @@ public class MainPageController {
                     String email = field2Input.getText();
                     String phone = field3Input.getText();
 
-                    boolean exists = customerRepository.findAll().stream()
+                    boolean phoneExists = customerRepository.findAll().stream()
                             .anyMatch(c -> c.getPhone().equals(phone));
+                    boolean emailExists = customerRepository.findAll().stream()
+                            .anyMatch(c -> c.getEmail().equals(email));
 
-                    if (exists) {
+                    if (phoneExists) {
                         new Alert(Alert.AlertType.ERROR, "This phone number is already in use!").showAndWait();
                         setStatus("Customer add failed: phone already exists.");
+                        return;
+                    }
+
+                    if (emailExists) {
+                        new Alert(Alert.AlertType.ERROR, "This email is already in use!").showAndWait();
+                        setStatus("Customer add failed: email already exists.");
                         return;
                     }
 
