@@ -136,10 +136,14 @@ public class MainPageController {
         tableView.getColumns().addAll(c0, c1, c2, c3, c4);
 
 
+
         field1Input.setPromptText("Name");
         field2Input.setPromptText("Category");
         field3Input.setPromptText("Price");
         field4Input.setPromptText("Stock");
+
+        // 4. input aktivalas
+        field4Input.setDisable(false);
 
         // nincs 5. input
         field5Input.setPromptText("");
